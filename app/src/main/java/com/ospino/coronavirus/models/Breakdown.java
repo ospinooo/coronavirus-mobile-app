@@ -88,4 +88,7 @@ public class Breakdown implements Serializable {
         this.newlyRecoveredCases = newlyRecoveredCases;
     }
 
+    public Integer getActiveCases() {
+        return getTotalConfirmedCases() - (getTotalDeaths() + getTotalRecoveredCases());
+    }
 }
