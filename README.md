@@ -1,2 +1,1 @@
-# coronavirus-mobile-app
-Coronavirus data App
+# Coronavirus data App
