@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import com.ospino.coronavirus.MainActivity;
 import com.ospino.coronavirus.adapters.MainListAdapter;
 import com.ospino.coronavirus.models.Breakdown;
+import com.ospino.coronavirus.models.Country;
 import com.ospino.coronavirus.models.Global;
 import com.ospino.coronavirus.repositories.CoronavirusRepository;
 
@@ -84,6 +85,25 @@ public class CoronavirusApi {
         return global;
     }
 
+
+    /**
+     * GetCountryData
+     * @param iso country iso
+     * @return data
+     * @throws IOException
+     */
+    public Country getCountryData(String iso) throws IOException {
+        final Request request = new Request.Builder()
+                .url(getCountryURI(iso))
+                .method("GET", null)
+                .addHeader("Subscription-Key", getKey())
+                .build();
+
+        Response response = client.newCall(request).execute();
+        Gson gson = new Gson();
+        Country country = gson.fromJson(response.body().string(), new TypeToken<Country>() {}.getType());
+        return country;
+    }
 
     public String getKey () {
         return this.KEY;

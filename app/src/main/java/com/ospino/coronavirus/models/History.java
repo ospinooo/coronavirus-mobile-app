@@ -4,6 +4,12 @@ package com.ospino.coronavirus.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class History {
 
     @SerializedName("date")
@@ -49,6 +55,17 @@ public class History {
 
     public void setRecovered(Integer recovered) {
         this.recovered = recovered;
+    }
+
+    public Long getTimeStamp() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date parsedDate = null;
+        try {
+            parsedDate = dateFormat.parse(this.getDate().split("T")[0]);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return parsedDate.getTime();
     }
 
 }

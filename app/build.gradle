@@ -49,6 +49,8 @@ dependencies {
     // Flags
     implementation 'com.michaelfotiadis:android-country-flags:1.0.3'
 
+    // Charts
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     // Default
     implementation 'androidx.appcompat:appcompat:1.0.2'
