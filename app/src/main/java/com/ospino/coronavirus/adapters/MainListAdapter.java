@@ -62,7 +62,14 @@ public class MainListAdapter extends ArrayAdapter<Breakdown> {
                         ,null, context.getPackageName()));
         holder.textDeaths.setText(String.valueOf(item.getTotalDeaths()));
         holder.textRecovered.setText(String.valueOf(item.getTotalRecoveredCases()));
-        
+
+
+        view.setOnClickListener(view1 -> {
+            Intent intent = new Intent(context, CountryDataActivity.class);
+            intent.putExtra("country", item);
+            context.startActivity(intent);
+        });
+
         return view;
     }
 }
