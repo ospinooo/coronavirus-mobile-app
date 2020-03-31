@@ -42,10 +42,10 @@ public class MainListAdapter extends ArrayAdapter<Breakdown> {
         View view = inflator.inflate(R.layout.activity_main_list_view_item, null);
         ViewHolder viewHolder = new ViewHolder();
 
-        viewHolder.textViewConfirmed = (TextView) view.findViewById(R.id.text_confirmed);
-        viewHolder.textViewNewCases = (TextView) view.findViewById(R.id.text_new_cases);
-        viewHolder.textCountry = (TextView) view.findViewById(R.id.text_country);
-        viewHolder.imageViewFlag = (ImageView) view.findViewById(R.id.image_flag);
+        viewHolder.textViewConfirmed = view.findViewById(R.id.text_confirmed);
+        viewHolder.textViewNewCases = view.findViewById(R.id.text_new_cases);
+        viewHolder.textCountry = view.findViewById(R.id.text_country);
+        viewHolder.imageViewFlag = view.findViewById(R.id.image_flag);
         viewHolder.textDeaths = view.findViewById(R.id.text_deaths);
         viewHolder.textRecovered = view.findViewById(R.id.text_recovered);
 
@@ -54,14 +54,17 @@ public class MainListAdapter extends ArrayAdapter<Breakdown> {
         Breakdown item = list.get(position);
         System.out.println(item.getNewlyConfirmedCases());
         ViewHolder holder = (ViewHolder) view.getTag();
-        holder.textViewConfirmed.setText(String.valueOf(item.getTotalConfirmedCases()));
-        holder.textViewNewCases.setText(String.valueOf(item.getNewlyConfirmedCases()));
+
         holder.textCountry.setText(String.valueOf(item.getLocation().getIsoCode()));
+
         holder.imageViewFlag.setImageResource(context.getResources()
                 .getIdentifier("drawable/ic_list_country_" + item.getLocation().getIsoCode().toLowerCase()
                         ,null, context.getPackageName()));
-        holder.textDeaths.setText(String.valueOf(item.getTotalDeaths()));
-        holder.textRecovered.setText(String.valueOf(item.getTotalRecoveredCases()));
+
+        holder.textViewConfirmed.setText(String.format("%,d", item.getTotalConfirmedCases()));
+        holder.textViewNewCases.setText(String.format("%,d",item.getNewlyConfirmedCases()));
+        holder.textDeaths.setText(String.format("%,d",item.getTotalDeaths()));
+        holder.textRecovered.setText(String.format("%,d",item.getTotalRecoveredCases()));
 
         view.setOnClickListener(view1 -> {
             Intent intent = new Intent(context, CountryDataActivity.class);
