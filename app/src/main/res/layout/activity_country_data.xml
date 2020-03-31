@@ -285,10 +285,10 @@
 
 
     <View
-        android:id="@+id/view4"
+        android:id="@+id/divider_data_graph"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_margin="@dimen/list_padding"
+        android:layout_margin="30dp"
         android:background="@color/lighterGray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -301,7 +301,7 @@
         android:padding="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view4">
+        app:layout_constraintTop_toBottomOf="@+id/divider_data_graph">
 
         <ProgressBar
             android:id="@+id/line_chart_progress_bar"
