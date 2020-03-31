@@ -8,6 +8,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -15,9 +16,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.textclassifier.TextClassifier;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.ospino.coronavirus.adapters.MainListAdapter;
@@ -39,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeLayout = null;
     private ListView mainListView = null;
     private ListHeaders listHeaders = null;
+    protected ConstraintLayout headers = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +59,59 @@ public class MainActivity extends AppCompatActivity {
         swipeLayout = findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(() -> new AsyncCaller().execute());
 
+        // Headers
+        listHeaders = new ListHeaders();
+        headers = findViewById(R.id.headers);
         setSortingListeners();
+
         // Get all data
         new AsyncCaller().execute();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+
+        searchView.setOnSearchClickListener(view -> {
+            mainListAdapter.sort((breakdown, t1) -> breakdown.getLocation().getCountryOrRegion().compareTo(t1.getLocation().getCountryOrRegion()));
+            headers.setVisibility(View.GONE);
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                Log.v(TAG, "TextChange");
+                mainListAdapter.getFilter().filter(s);
+                return true;
+            }
+        });
+
+        searchView.setOnCloseListener(() -> {
+            mainListAdapter = new MainListAdapter(this, mainListAdapter.getList());
+            mainListView.setAdapter(mainListAdapter);
+            headers.setVisibility(View.VISIBLE);
+            setSortingListeners();
+            return false;
+        });
+
+
+
+        return true;
+
     }
 
     static class ListHeaders {
@@ -75,10 +130,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setSortingListeners() {
+    protected void setSortingListeners() {
+        headers = findViewById(R.id.headers);
 
-        ConstraintLayout headers = findViewById(R.id.headers);
-        listHeaders = new ListHeaders();
         listHeaders.textCountry = headers.findViewById(R.id.text_country);
         listHeaders.textConfirmed = headers.findViewById(R.id.text_confirmed);
         listHeaders.textRecovered = headers.findViewById(R.id.text_recovered);
@@ -87,18 +141,22 @@ public class MainActivity extends AppCompatActivity {
 
         listHeaders.textCountry.setOnClickListener(view -> {
             mainListAdapter.sort((breakdown, t1) -> breakdown.getLocation().getIsoCode().compareTo(t1.getLocation().getIsoCode()));
+            mainListAdapter.notifyDataSetChanged();
             listHeaders.resetAllNotBold();
             listHeaders.textCountry.setTypeface(null, Typeface.BOLD);
         });
 
         listHeaders.textConfirmed.setOnClickListener(view -> {
+            Log.v(TAG, "Sort by confirmed");
             mainListAdapter.sort((breakdown, t1) -> t1.getTotalConfirmedCases() - breakdown.getTotalConfirmedCases());
+            mainListAdapter.notifyDataSetChanged();
             listHeaders.resetAllNotBold();
             listHeaders.textConfirmed.setTypeface(null, Typeface.BOLD);
         });
 
         listHeaders.textDeaths.setOnClickListener(view -> {
             mainListAdapter.sort((breakdown, t1) -> t1.getTotalDeaths() - breakdown.getTotalDeaths());
+            mainListAdapter.notifyDataSetChanged();
             listHeaders.resetAllNotBold();
             listHeaders.textDeaths.setTypeface(null, Typeface.BOLD);
         });
@@ -106,12 +164,14 @@ public class MainActivity extends AppCompatActivity {
         listHeaders.textRecovered.setOnClickListener(view -> {
             mainListAdapter.sort((breakdown, t1) -> t1.getTotalRecoveredCases() - breakdown.getTotalRecoveredCases());
             listHeaders.resetAllNotBold();
+            mainListAdapter.notifyDataSetChanged();
             listHeaders.textRecovered.setTypeface(null, Typeface.BOLD);
         });
 
         listHeaders.textTodayNewCases.setOnClickListener(view -> {
             mainListAdapter.sort((breakdown, t1) -> t1.getNewlyConfirmedCases() - breakdown.getNewlyConfirmedCases());
             listHeaders.resetAllNotBold();
+            mainListAdapter.notifyDataSetChanged();
             listHeaders.textTodayNewCases.setTypeface(null, Typeface.BOLD);
         });
     }
