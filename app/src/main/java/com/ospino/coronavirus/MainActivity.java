@@ -11,6 +11,7 @@ import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
             mainListAdapter.sort((breakdown, t1) -> breakdown.getLocation().getIsoCode().compareTo(t1.getLocation().getIsoCode()));
             mainListAdapter.notifyDataSetChanged();
             listHeaders.resetAllNotBold();
-            listHeaders.textCountry.setTypeface(null, Typeface.BOLD);
+            listHeaders.textCountry.setTypeface(null, Typeface.BOLD_ITALIC);
         });
 
         listHeaders.textConfirmed.setOnClickListener(view -> {
@@ -151,28 +152,29 @@ public class MainActivity extends AppCompatActivity {
             mainListAdapter.sort((breakdown, t1) -> t1.getTotalConfirmedCases() - breakdown.getTotalConfirmedCases());
             mainListAdapter.notifyDataSetChanged();
             listHeaders.resetAllNotBold();
-            listHeaders.textConfirmed.setTypeface(null, Typeface.BOLD);
+            listHeaders.textConfirmed.setTypeface(null, Typeface.BOLD_ITALIC);
         });
 
         listHeaders.textDeaths.setOnClickListener(view -> {
             mainListAdapter.sort((breakdown, t1) -> t1.getTotalDeaths() - breakdown.getTotalDeaths());
             mainListAdapter.notifyDataSetChanged();
             listHeaders.resetAllNotBold();
-            listHeaders.textDeaths.setTypeface(null, Typeface.BOLD);
+            listHeaders.textDeaths.setTypeface(null, Typeface.BOLD_ITALIC);
         });
 
         listHeaders.textRecovered.setOnClickListener(view -> {
             mainListAdapter.sort((breakdown, t1) -> t1.getTotalRecoveredCases() - breakdown.getTotalRecoveredCases());
             listHeaders.resetAllNotBold();
             mainListAdapter.notifyDataSetChanged();
-            listHeaders.textRecovered.setTypeface(null, Typeface.BOLD);
+            listHeaders.textRecovered.setTypeface(null, Typeface.BOLD_ITALIC);
         });
 
         listHeaders.textTodayNewCases.setOnClickListener(view -> {
             mainListAdapter.sort((breakdown, t1) -> t1.getNewlyConfirmedCases() - breakdown.getNewlyConfirmedCases());
             listHeaders.resetAllNotBold();
             mainListAdapter.notifyDataSetChanged();
-            listHeaders.textTodayNewCases.setTypeface(null, Typeface.BOLD);
+            listHeaders.textTodayNewCases.setTypeface(null, Typeface.BOLD_ITALIC);
+            listHeaders.textTodayNewCases.setClickable(true);
         });
     }
 
@@ -206,7 +208,9 @@ public class MainActivity extends AppCompatActivity {
             //this method will be running on UI thread
             mainListAdapter.clear();
             mainListAdapter.addAll(global.getStats().getBreakdowns());
+            mainListAdapter.sort((breakdown, t1) -> breakdown.getLocation().getIsoCode().compareTo(t1.getLocation().getIsoCode()));
             listHeaders.resetAllNotBold();
+            listHeaders.textCountry.setTypeface(null, Typeface.BOLD_ITALIC);
             mainListAdapter.notifyDataSetChanged();
             swipeLayout.setRefreshing(false);
         }

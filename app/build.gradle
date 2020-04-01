@@ -42,6 +42,9 @@ dependencies {
     // Optional : Kotlin extension (https://d.android.com/kotlin/ktx)
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 
+    // Mapbox
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.0.0'
+
     // Fragments androidx
     def fragment_version = "1.2.1"
     implementation "androidx.fragment:fragment:$fragment_version"
