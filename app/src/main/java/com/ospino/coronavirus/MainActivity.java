@@ -26,6 +26,8 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.ospino.coronavirus.activities.CountryDataActivity;
+import com.ospino.coronavirus.activities.WorldDataActivity;
 import com.ospino.coronavirus.adapters.MainListAdapter;
 import com.ospino.coronavirus.models.Breakdown;
 import com.ospino.coronavirus.models.Global;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView mainListView = null;
     private ListHeaders listHeaders = null;
     protected ConstraintLayout headers = null;
+    protected Global global = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +62,14 @@ public class MainActivity extends AppCompatActivity {
         mainListView = findViewById(R.id.main_list_view);
         mainListView.setAdapter(mainListAdapter);
 
+        // World button
+        findViewById(R.id.button_world_data).setOnClickListener(view -> {
+            Intent intent = new Intent(this, WorldDataActivity.class);
+            intent.putExtra("country", global);
+            startActivity(intent);
+        });
+
+        // Swipe Refresh
         swipeLayout = findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(() -> {
             if (isNetworkConnected()){
@@ -201,8 +212,6 @@ public class MainActivity extends AppCompatActivity {
 
     private class AsyncCaller extends AsyncTask<Void, Void, Void>
     {
-        Global global = null;
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
