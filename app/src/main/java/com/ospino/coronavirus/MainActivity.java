@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnSearchClickListener(view -> {
             mainListAdapter.sort((breakdown, t1) -> breakdown.getLocation().getCountryOrRegion().compareTo(t1.getLocation().getCountryOrRegion()));
             headers.setVisibility(View.GONE);
+            listHeaders.resetAllNotBold();
         });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -106,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
             mainListView.setAdapter(mainListAdapter);
             headers.setVisibility(View.VISIBLE);
             setSortingListeners();
+            initListSortedByCountry();
             return false;
         });
 
@@ -208,12 +210,16 @@ public class MainActivity extends AppCompatActivity {
             //this method will be running on UI thread
             mainListAdapter.clear();
             mainListAdapter.addAll(global.getStats().getBreakdowns());
-            mainListAdapter.sort((breakdown, t1) -> breakdown.getLocation().getIsoCode().compareTo(t1.getLocation().getIsoCode()));
-            listHeaders.resetAllNotBold();
-            listHeaders.textCountry.setTypeface(null, Typeface.BOLD_ITALIC);
+            initListSortedByCountry();
             mainListAdapter.notifyDataSetChanged();
             swipeLayout.setRefreshing(false);
         }
+    }
+
+    private void initListSortedByCountry(){
+        mainListAdapter.sort((breakdown, t1) -> breakdown.getLocation().getIsoCode().compareTo(t1.getLocation().getIsoCode()));
+        listHeaders.resetAllNotBold();
+        listHeaders.textCountry.setTypeface(null, Typeface.BOLD_ITALIC);
     }
 
 
