@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -64,8 +66,8 @@ public class CountryDataActivity extends AppCompatActivity {
         setMapBox();
 
         // Toolbar
+        toolbar = findViewById(R.id.toolbar_country_data);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         new AsyncCaller().execute();
     }
 
@@ -209,6 +211,26 @@ public class CountryDataActivity extends AppCompatActivity {
         viewHolder.textTodayRecovered.setText(String.valueOf(country.getNewlyRecoveredCases()));
 
         viewHolder.textActiveCases.setText(String.valueOf(country.getActiveCases()));
+    }
+
+    @Override
+    public void onBackPressed() {
+        this.finish();
+        overridePendingTransition(R.anim.left_slide_in, R.anim.right_slide_out);
+    }
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
 

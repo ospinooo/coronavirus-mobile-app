@@ -90,6 +90,7 @@ public class MainListAdapter extends ArrayAdapter<Breakdown> implements Filterab
             Intent intent = new Intent(context, CountryDataActivity.class);
             intent.putExtra("country", item);
             context.startActivity(intent);
+            context.overridePendingTransition(R.anim.right_slide_in, R.anim.left_slide_out);
         });
 
         return convertView;
