@@ -5,15 +5,28 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
+
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.maps.Style;
 import com.ospino.coronavirus.R;
 import com.ospino.coronavirus.models.Breakdown;
 import com.ospino.coronavirus.models.Country;
@@ -27,21 +40,53 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import androidx.appcompat.app.AppCompatActivity;
 
-public class CountryDataActivity extends Activity {
+
+public class CountryDataActivity extends AppCompatActivity {
 
     private static String TAG = "ActivityCountryData";
     private Breakdown country;
     private Country country_data;
     protected ViewHolder viewHolder;
+    private Toolbar toolbar;
+    private MapView mapView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Mapbox.getInstance(this, getString(R.string.access_mapbox_token));
         setContentView(R.layout.activity_country_data);
+
         getIncomingIntent();
 
+        // Mapbox
+        mapView = findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
+        setMapBox();
+
+        // Toolbar
+        toolbar = findViewById(R.id.toolbar_country_data);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         new AsyncCaller().execute();
+    }
+
+    private void setMapBox() {
+        mapView.getMapAsync(mapboxMap -> {
+            mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/mapbox/cjf4m44iw0uza2spb3q0a7s41"));
+            mapboxMap.getUiSettings().setAllGesturesEnabled(false);
+
+            CameraPosition position = new CameraPosition.Builder()
+                    .target(new LatLng(country.getLocation().getLat(), country.getLocation().getLong()))
+                    .zoom(3)
+                    .tilt(0)
+                    .build();
+            mapboxMap.setCameraPosition(position);
+
+            MarkerOptions options = new MarkerOptions();
+            options.position(new LatLng(country.getLocation().getLat(), country.getLocation().getLong()));
+            mapboxMap.addMarker(options);
+        });
     }
 
     protected String getCountryIso() {
@@ -157,15 +202,35 @@ public class CountryDataActivity extends Activity {
                                 null,
                                 getPackageName()));
 
-        viewHolder.textTotalConfirmedCases.setText(String.valueOf(country.getTotalConfirmedCases()));
-        viewHolder.textTotalDeaths.setText(String.valueOf(country.getTotalDeaths()));
-        viewHolder.textTotalRecovered.setText(String.valueOf(country.getTotalRecoveredCases()));
+        viewHolder.textTotalConfirmedCases.setText(String.format("%,d", country.getTotalConfirmedCases()));
+        viewHolder.textTotalDeaths.setText(String.format("%,d",country.getTotalDeaths()));
+        viewHolder.textTotalRecovered.setText(String.format("%,d",country.getTotalRecoveredCases()));
 
-        viewHolder.textTodayConfirmedCases.setText(String.valueOf(country.getNewlyConfirmedCases()));
-        viewHolder.textTodayDeaths.setText(String.valueOf(country.getNewDeaths()));
-        viewHolder.textTodayRecovered.setText(String.valueOf(country.getNewlyRecoveredCases()));
+        viewHolder.textTodayConfirmedCases.setText(String.format("%,d",country.getNewlyConfirmedCases()));
+        viewHolder.textTodayDeaths.setText(String.format("%,d",country.getNewDeaths()));
+        viewHolder.textTodayRecovered.setText(String.format("%,d",country.getNewlyRecoveredCases()));
 
-        viewHolder.textActiveCases.setText(String.valueOf(country.getActiveCases()));
+        viewHolder.textActiveCases.setText(String.format("%,d",country.getActiveCases()));
+    }
+
+    @Override
+    public void onBackPressed() {
+        this.finish();
+        overridePendingTransition(R.anim.left_slide_in, R.anim.right_slide_out);
+    }
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
 

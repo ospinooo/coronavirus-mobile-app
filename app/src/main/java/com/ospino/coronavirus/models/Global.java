@@ -4,9 +4,10 @@ package com.ospino.coronavirus.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Observable;
 
-public class Global extends Observable {
+public class Global extends Observable implements Serializable {
 
     @SerializedName("location")
     @Expose

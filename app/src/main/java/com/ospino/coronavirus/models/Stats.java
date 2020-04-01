@@ -1,11 +1,12 @@
 
 package com.ospino.coronavirus.models;
 
+import java.io.Serializable;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Stats {
+public class Stats implements Serializable {
 
     @SerializedName("totalConfirmedCases")
     @Expose

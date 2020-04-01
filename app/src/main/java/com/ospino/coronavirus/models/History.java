@@ -4,13 +4,14 @@ package com.ospino.coronavirus.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class History {
+public class History implements Serializable {
 
     @SerializedName("date")
     @Expose
