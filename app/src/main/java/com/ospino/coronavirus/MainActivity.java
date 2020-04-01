@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -32,6 +33,7 @@ import com.ospino.coronavirus.service.CoronavirusApi;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -58,15 +60,31 @@ public class MainActivity extends AppCompatActivity {
         mainListView.setAdapter(mainListAdapter);
 
         swipeLayout = findViewById(R.id.swipe_container);
-        swipeLayout.setOnRefreshListener(() -> new AsyncCaller().execute());
+        swipeLayout.setOnRefreshListener(() -> {
+            if (isNetworkConnected()){
+                // Get all data
+                findViewById(R.id.no_internet_connection).setVisibility(View.GONE);
+                new AsyncCaller().execute();
+            } else {
+                mainListAdapter.clear();
+                mainListAdapter.notifyDataSetChanged();
+                findViewById(R.id.no_internet_connection).setVisibility(View.VISIBLE);
+                swipeLayout.setRefreshing(false);
+            }
+        });
+
+        if (isNetworkConnected()){
+            // Get all data
+            findViewById(R.id.no_internet_connection).setVisibility(View.GONE);
+            new AsyncCaller().execute();
+        } else {
+            findViewById(R.id.no_internet_connection).setVisibility(View.VISIBLE);
+        }
 
         // Headers
         listHeaders = new ListHeaders();
         headers = findViewById(R.id.headers);
         setSortingListeners();
-
-        // Get all data
-        new AsyncCaller().execute();
     }
 
     @Override
@@ -220,6 +238,15 @@ public class MainActivity extends AppCompatActivity {
         mainListAdapter.sort((breakdown, t1) -> breakdown.getLocation().getIsoCode().compareTo(t1.getLocation().getIsoCode()));
         listHeaders.resetAllNotBold();
         listHeaders.textCountry.setTypeface(null, Typeface.BOLD_ITALIC);
+    }
+
+    /**
+     * isNetworkConnected
+     * @return true if we have internet or false if we don't
+     */
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 
 
