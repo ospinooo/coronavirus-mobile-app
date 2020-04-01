@@ -202,15 +202,15 @@ public class CountryDataActivity extends AppCompatActivity {
                                 null,
                                 getPackageName()));
 
-        viewHolder.textTotalConfirmedCases.setText(String.valueOf(country.getTotalConfirmedCases()));
-        viewHolder.textTotalDeaths.setText(String.valueOf(country.getTotalDeaths()));
-        viewHolder.textTotalRecovered.setText(String.valueOf(country.getTotalRecoveredCases()));
+        viewHolder.textTotalConfirmedCases.setText(String.format("%,d", country.getTotalConfirmedCases()));
+        viewHolder.textTotalDeaths.setText(String.format("%,d",country.getTotalDeaths()));
+        viewHolder.textTotalRecovered.setText(String.format("%,d",country.getTotalRecoveredCases()));
 
-        viewHolder.textTodayConfirmedCases.setText(String.valueOf(country.getNewlyConfirmedCases()));
-        viewHolder.textTodayDeaths.setText(String.valueOf(country.getNewDeaths()));
-        viewHolder.textTodayRecovered.setText(String.valueOf(country.getNewlyRecoveredCases()));
+        viewHolder.textTodayConfirmedCases.setText(String.format("%,d",country.getNewlyConfirmedCases()));
+        viewHolder.textTodayDeaths.setText(String.format("%,d",country.getNewDeaths()));
+        viewHolder.textTodayRecovered.setText(String.format("%,d",country.getNewlyRecoveredCases()));
 
-        viewHolder.textActiveCases.setText(String.valueOf(country.getActiveCases()));
+        viewHolder.textActiveCases.setText(String.format("%,d",country.getActiveCases()));
     }
 
     @Override
