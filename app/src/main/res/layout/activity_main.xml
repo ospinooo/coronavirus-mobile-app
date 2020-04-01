@@ -36,6 +36,22 @@
         android:background="@android:color/darker_gray"/>
 
 
+    <Button
+        android:id="@+id/button_world_data"
+        android:layout_width="@dimen/world_button_2times_radious"
+        android:layout_height="@dimen/world_button_2times_radious"
+        android:layout_margin="10dp"
+        android:background="@drawable/round_button"
+        android:clickable="true"
+        android:elevation="4dp"
+        android:foreground="@drawable/ic_public_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.97" />
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_container"
         android:layout_width="match_parent"
@@ -50,9 +66,7 @@
             android:clickable="true"
             android:choiceMode="singleChoice"
             >
-
         </ListView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
