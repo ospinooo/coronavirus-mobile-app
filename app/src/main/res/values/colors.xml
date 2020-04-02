@@ -10,4 +10,5 @@
     <color name="red">#CA3B3B</color>
     <color name="green">#92F46F</color>
     <color name="yellow">#FFEB3B</color>
+    <color name="whitePressed">#F1F1F1</color>
 </resources>

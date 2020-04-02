@@ -12,9 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/shadow"
         android:elevation="5dp"
-        layout="@layout/activity_main_list_view_item">
+        layout="@layout/activity_main_list_view_headers">
     </include>
 
     <TextView
