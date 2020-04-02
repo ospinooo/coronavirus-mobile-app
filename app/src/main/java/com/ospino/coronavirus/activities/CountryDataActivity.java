@@ -1,6 +1,7 @@
 package com.ospino.coronavirus.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,9 +17,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
@@ -121,28 +125,39 @@ public class CountryDataActivity extends AppCompatActivity {
             List<Entry> dataSetConfirmed = new ArrayList<Entry>();
             List<Entry> dataSetDeaths = new ArrayList<Entry>();
             List<Entry> dataSetRecovered = new ArrayList<Entry>();
+            List<Entry> dataSetActive = new ArrayList<Entry>();
 
             for (History point: country_data.getStats().getHistory()) {
                 Long ts = point.getTimeStamp();
                 dataSetConfirmed.add(new Entry(ts, point.getConfirmed()));
                 dataSetDeaths.add(new Entry(ts, point.getDeaths()));
                 dataSetRecovered.add(new Entry(ts, point.getRecovered()));
+                dataSetActive.add(new Entry(ts, point.getConfirmed()- (point.getDeaths() + point.getRecovered())));
             }
 
-            ArrayList colors = new ArrayList<Color>();
-            colors.add(Color.BLUE);
-            colors.add(Color.RED);
-            colors.add(Color.GREEN);
-
             LineData lineChartData = new LineData();
-            lineChartData.setValueTextColors(colors);
 
-            lineChartData.addDataSet(new LineDataSet(dataSetConfirmed, "Confirmed Cases"));
-            lineChartData.addDataSet(new LineDataSet(dataSetDeaths, "Deaths Cases"));
-            lineChartData.addDataSet(new LineDataSet(dataSetRecovered, "Recovered Cases"));
+            LineDataSet confirmedDataSet = new LineDataSet(dataSetConfirmed, "Confirmed");
+            confirmedDataSet.setCircleColor(getResources().getColor(R.color.blue, getTheme()));
+            confirmedDataSet.setColor(getResources().getColor(R.color.blue, getTheme()));
+            lineChartData.addDataSet(confirmedDataSet);
+
+            LineDataSet deathsDataSet = new LineDataSet(dataSetDeaths, "Deaths");
+            deathsDataSet.setCircleColor(getResources().getColor(R.color.red, getTheme()));
+            deathsDataSet.setColor(getResources().getColor(R.color.red, getTheme()));
+            lineChartData.addDataSet(deathsDataSet);
+
+            LineDataSet recoveredDataSet = new LineDataSet(dataSetRecovered, "Recovered");
+            recoveredDataSet.setCircleColor(getResources().getColor(R.color.green, getTheme()));
+            recoveredDataSet.setColor(getResources().getColor(R.color.green, getTheme()));
+            lineChartData.addDataSet(recoveredDataSet);
+
+            LineDataSet activeDataSet = new LineDataSet(dataSetActive, "Active");
+            activeDataSet.setCircleColor(getResources().getColor(R.color.yellow, getTheme()));
+            activeDataSet.setColor(getResources().getColor(R.color.yellow, getTheme()));
+            lineChartData.addDataSet(activeDataSet);
 
             viewHolder.lineChartAll.setData(lineChartData);
-
             viewHolder.lineChartProgressBar.setVisibility(View.INVISIBLE);
             viewHolder.lineChartAll.setVisibility(View.VISIBLE);
         }

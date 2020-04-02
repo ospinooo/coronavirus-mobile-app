@@ -6,4 +6,8 @@
     <color name="lighterGray">#CCCCCC</color>
     <color name="white">#FFF</color>
     <color name="colorPrimaryLight">#8F4EED</color>
+    <color name="blue">#3A51ED</color>
+    <color name="red">#CA3B3B</color>
+    <color name="green">#92F46F</color>
+    <color name="yellow">#FFEB3B</color>
 </resources>
