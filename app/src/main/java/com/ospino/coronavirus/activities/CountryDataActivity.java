@@ -38,6 +38,7 @@ import com.ospino.coronavirus.models.Global;
 import com.ospino.coronavirus.models.History;
 import com.ospino.coronavirus.service.CoronavirusApi;
 import com.ospino.coronavirus.utils.GraphDateFormater;
+import com.ospino.coronavirus.utils.LineGraphHistoryGenerator;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,7 +62,6 @@ public class CountryDataActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Mapbox.getInstance(this, getString(R.string.access_mapbox_token));
         setContentView(R.layout.activity_country_data);
-
         getIncomingIntent();
 
         // Mapbox
@@ -77,7 +77,7 @@ public class CountryDataActivity extends AppCompatActivity {
 
     private void setMapBox() {
         mapView.getMapAsync(mapboxMap -> {
-            mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/mapbox/cjf4m44iw0uza2spb3q0a7s41"));
+            mapboxMap.setStyle(new Style.Builder().fromUri(getString(R.string.mapbox_style_custom)));
             mapboxMap.getUiSettings().setAllGesturesEnabled(false);
 
             CameraPosition position = new CameraPosition.Builder()
@@ -118,44 +118,11 @@ public class CountryDataActivity extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             //this method will be running on UI thread
-            List<Entry> dataSet = country_data.getStats().getHistory().stream()
-                    .map(point -> new Entry(point.getTimeStamp(), point.getConfirmed()))
-                    .collect(Collectors.toList());
 
-            List<Entry> dataSetConfirmed = new ArrayList<Entry>();
-            List<Entry> dataSetDeaths = new ArrayList<Entry>();
-            List<Entry> dataSetRecovered = new ArrayList<Entry>();
-            List<Entry> dataSetActive = new ArrayList<Entry>();
-
-            for (History point: country_data.getStats().getHistory()) {
-                Long ts = point.getTimeStamp();
-                dataSetConfirmed.add(new Entry(ts, point.getConfirmed()));
-                dataSetDeaths.add(new Entry(ts, point.getDeaths()));
-                dataSetRecovered.add(new Entry(ts, point.getRecovered()));
-                dataSetActive.add(new Entry(ts, point.getConfirmed()- (point.getDeaths() + point.getRecovered())));
-            }
-
-            LineData lineChartData = new LineData();
-
-            LineDataSet confirmedDataSet = new LineDataSet(dataSetConfirmed, "Confirmed");
-            confirmedDataSet.setCircleColor(getResources().getColor(R.color.blue, getTheme()));
-            confirmedDataSet.setColor(getResources().getColor(R.color.blue, getTheme()));
-            lineChartData.addDataSet(confirmedDataSet);
-
-            LineDataSet deathsDataSet = new LineDataSet(dataSetDeaths, "Deaths");
-            deathsDataSet.setCircleColor(getResources().getColor(R.color.red, getTheme()));
-            deathsDataSet.setColor(getResources().getColor(R.color.red, getTheme()));
-            lineChartData.addDataSet(deathsDataSet);
-
-            LineDataSet recoveredDataSet = new LineDataSet(dataSetRecovered, "Recovered");
-            recoveredDataSet.setCircleColor(getResources().getColor(R.color.green, getTheme()));
-            recoveredDataSet.setColor(getResources().getColor(R.color.green, getTheme()));
-            lineChartData.addDataSet(recoveredDataSet);
-
-            LineDataSet activeDataSet = new LineDataSet(dataSetActive, "Active");
-            activeDataSet.setCircleColor(getResources().getColor(R.color.yellow, getTheme()));
-            activeDataSet.setColor(getResources().getColor(R.color.yellow, getTheme()));
-            lineChartData.addDataSet(activeDataSet);
+            LineData lineChartData = LineGraphHistoryGenerator.generateLineChartDataFromHistoricalData(
+                country_data.getStats().getHistory(),
+                getResources(),
+                getTheme());
 
             viewHolder.lineChartAll.setData(lineChartData);
             viewHolder.lineChartProgressBar.setVisibility(View.INVISIBLE);
