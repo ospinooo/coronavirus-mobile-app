@@ -1,14 +1,23 @@
 
 package com.ospino.coronavirus.models;
 
+import android.util.Log;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Observable;
+import java.util.TimeZone;
 
 public class Global extends Observable implements Serializable {
 
+    private static final String TAG = "Global";
     @SerializedName("location")
     @Expose
     private Location location;
@@ -27,8 +36,24 @@ public class Global extends Observable implements Serializable {
         this.location = location;
     }
 
+    public Date getDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date parsedDate = null;
+        try {
+            parsedDate = dateFormat.parse(updatedDateTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return parsedDate;
+    }
+
     public String getUpdatedDateTime() {
-        return updatedDateTime;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(getDate());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        dateFormat.setTimeZone(TimeZone.getDefault());
+        return dateFormat.format(calendar.getTime());
     }
 
     public void setUpdatedDateTime(String updatedDateTime) {
@@ -42,5 +67,6 @@ public class Global extends Observable implements Serializable {
     public void setStats(Stats stats) {
         this.stats = stats;
     }
+
 
 }

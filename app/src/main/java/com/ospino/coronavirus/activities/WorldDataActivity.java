@@ -3,34 +3,21 @@ package com.ospino.coronavirus.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.annotations.MarkerOptions;
-import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.ospino.coronavirus.R;
-import com.ospino.coronavirus.models.Breakdown;
 import com.ospino.coronavirus.models.Global;
-import com.ospino.coronavirus.models.History;
 import com.ospino.coronavirus.models.Stats;
 import com.ospino.coronavirus.utils.GraphDateFormater;
 import com.ospino.coronavirus.utils.LineGraphHistoryGenerator;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class WorldDataActivity extends AppCompatActivity {
 
@@ -66,6 +53,7 @@ public class WorldDataActivity extends AppCompatActivity {
     }
 
     static class ViewHolder {
+        protected TextView textUpdatedDateTime;
         protected TextView textTotalConfirmedCases;
         protected TextView textTotalDeaths;
         protected TextView textTotalRecovered;
@@ -83,6 +71,9 @@ public class WorldDataActivity extends AppCompatActivity {
     private void inflateActivityView(Global global) {
         viewHolder = new ViewHolder();
 
+        // Updated date time
+        viewHolder.textUpdatedDateTime = findViewById(R.id.text_updated_time);
+
         // Total
         viewHolder.textTotalConfirmedCases = findViewById(R.id.text_total_confirmed_cases);
         viewHolder.textTotalDeaths = findViewById(R.id.text_total_deaths);
@@ -97,6 +88,9 @@ public class WorldDataActivity extends AppCompatActivity {
         viewHolder.lineChartAll = findViewById(R.id.chart);
         viewHolder.lineChartAll.getXAxis().setValueFormatter(new GraphDateFormater());
         viewHolder.lineChartProgressBar = findViewById(R.id.line_chart_progress_bar);
+
+        // Updated Date time
+        viewHolder.textUpdatedDateTime.setText(global.getUpdatedDateTime());
 
         Stats stats = global.getStats();
         // Total

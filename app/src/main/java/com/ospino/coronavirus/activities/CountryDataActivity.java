@@ -127,10 +127,12 @@ public class CountryDataActivity extends AppCompatActivity {
             viewHolder.lineChartAll.setData(lineChartData);
             viewHolder.lineChartProgressBar.setVisibility(View.INVISIBLE);
             viewHolder.lineChartAll.setVisibility(View.VISIBLE);
+            viewHolder.textUpdatedDateTime.setText(country_data.getUpdatedDateTime());
         }
     }
 
     static class ViewHolder {
+        protected TextView textUpdatedDateTime;
         protected TextView textCountry;
         protected ImageView imageViewFlag;
         protected TextView textTotalConfirmedCases;
@@ -160,6 +162,7 @@ public class CountryDataActivity extends AppCompatActivity {
     private void inflateActivityView(Breakdown country) {
         viewHolder = new ViewHolder();
 
+        viewHolder.textUpdatedDateTime = findViewById(R.id.text_updated_time);
         viewHolder.textCountry =  findViewById(R.id.text_country);
         viewHolder.imageViewFlag = findViewById(R.id.image_flag);
         // Total

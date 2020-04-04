@@ -7,4 +7,5 @@
     <string name="empty_string">\" \"</string>
     <string name="world_text">World</string>
     <string name="mapbox_style_custom">mapbox://styles/mapbox/cjf4m44iw0uza2spb3q0a7s41</string>
+    <string name="updated_date_time_show_text">Updated date time: </string>
 </resources>
