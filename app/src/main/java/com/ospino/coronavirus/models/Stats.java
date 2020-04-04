@@ -97,4 +97,7 @@ public class Stats implements Serializable {
         this.breakdowns = breakdowns;
     }
 
+    public Integer getTotalActiveCases() {
+        return this.getTotalConfirmedCases() - (this.getTotalDeaths() + this.getTotalRecoveredCases());
+    }
 }
