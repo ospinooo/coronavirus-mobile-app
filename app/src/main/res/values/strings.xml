@@ -4,4 +4,7 @@
     <string name="search_hint">Country</string>
     <string name="access_mapbox_token">pk.eyJ1Ijoib3NwaW5vb28iLCJhIjoiY2pzZGdxNGUzMDdndzQ0bWRmazNjNjdpbSJ9.QspA2JmLjSe_zmsRxN6tjQ</string>
     <string name="no_internet_connection">No internet connection :(</string>
+    <string name="empty_string">\" \"</string>
+    <string name="world_text">World</string>
+    <string name="mapbox_style_custom">mapbox://styles/mapbox/cjf4m44iw0uza2spb3q0a7s41</string>
 </resources>
