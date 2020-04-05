@@ -10,21 +10,9 @@
 
 ## Screeshots
 
-### Main Screen
-
-![](images/Screenshot_20200405-120851.jpg)
-
-### Search
-
-![](images/Screenshot_20200405-120902.jpg)
-
-### Country statistics screen
-
-![](images/Screenshot_20200405-120920.jpg)
-
-### World statistics screen
-
-![](images/Screenshot_20200405-120930.jpg)
+|                Main Screen                 |                   Search                   |         Country statistics screen          |          World statistics screen           |
+| :----------------------------------------: | :----------------------------------------: | :----------------------------------------: | :----------------------------------------: |
+| ![](images/Screenshot_20200405-120851.jpg) | ![](images/Screenshot_20200405-120902.jpg) | ![](images/Screenshot_20200405-120920.jpg) | ![](images/Screenshot_20200405-120930.jpg) |
 
 ## Author
 
