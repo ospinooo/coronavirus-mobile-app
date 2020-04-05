@@ -5,8 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.LineData;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.maps.MapView;
-import com.mapbox.mapboxsdk.maps.Style;
 import com.ospino.coronavirus.R;
 import com.ospino.coronavirus.models.Global;
 import com.ospino.coronavirus.models.Stats;
@@ -31,14 +29,6 @@ public class WorldDataActivity extends AppCompatActivity {
         Mapbox.getInstance(this, getString(R.string.access_mapbox_token));
         setContentView(R.layout.activity_world_data);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        MapView mapView = findViewById(R.id.mapView);
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(mapboxMap -> {
-            mapboxMap.setStyle(new Style.Builder().fromUri(getString(R.string.mapbox_style_custom)));
-            mapboxMap.getUiSettings().setAllGesturesEnabled(false);
-        });
-
         getIncomingIntent();
     }
 
