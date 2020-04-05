@@ -29,6 +29,7 @@ import android.widget.TextView;
 import com.ospino.coronavirus.activities.CountryDataActivity;
 import com.ospino.coronavirus.activities.WorldDataActivity;
 import com.ospino.coronavirus.adapters.MainListAdapter;
+import com.ospino.coronavirus.adapters.MainListAdapter.CountrySortFields;
 import com.ospino.coronavirus.models.Breakdown;
 import com.ospino.coronavirus.models.Global;
 import com.ospino.coronavirus.service.CoronavirusApi;
@@ -64,9 +65,11 @@ public class MainActivity extends AppCompatActivity {
 
         // World button
         findViewById(R.id.button_world_data).setOnClickListener(view -> {
-            Intent intent = new Intent(this, WorldDataActivity.class);
-            intent.putExtra("country", global);
-            startActivity(intent);
+            if (global != null){
+                Intent intent = new Intent(this, WorldDataActivity.class);
+                intent.putExtra("country", global);
+                startActivity(intent);
+            }
         });
 
         // Swipe Refresh
@@ -96,6 +99,9 @@ public class MainActivity extends AppCompatActivity {
         listHeaders = new ListHeaders();
         headers = findViewById(R.id.headers);
         setSortingListeners();
+        listHeaders.resetAllNotBold();
+        listHeaders.textCountry.setTypeface(null, Typeface.BOLD_ITALIC);
+
     }
 
     @Override
@@ -112,9 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 searchManager.getSearchableInfo(getComponentName()));
 
         searchView.setOnSearchClickListener(view -> {
-            mainListAdapter.sort((breakdown, t1) -> breakdown.getLocation().getCountryOrRegion().compareTo(t1.getLocation().getCountryOrRegion()));
             headers.setVisibility(View.GONE);
-            listHeaders.resetAllNotBold();
         });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -132,11 +136,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         searchView.setOnCloseListener(() -> {
+            // Regenerate the list adapter
+            CountrySortFields sortFields = mainListAdapter.getCurrentSortField();
             mainListAdapter = new MainListAdapter(this, mainListAdapter.getList());
+            mainListAdapter.setCurrentSortField(sortFields);
             mainListView.setAdapter(mainListAdapter);
+
             headers.setVisibility(View.VISIBLE);
             setSortingListeners();
-            initListSortedByCountry();
+            mainListAdapter.sortByCurrentField();
             return false;
         });
 
@@ -172,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         listHeaders.textTodayNewCases = headers.findViewById(R.id.text_new_cases);
 
         listHeaders.textCountry.setOnClickListener(view -> {
-            mainListAdapter.sort((breakdown, t1) -> breakdown.getLocation().getIsoCode().compareTo(t1.getLocation().getIsoCode()));
+            mainListAdapter.sortByField(CountrySortFields.COUNTRY_ISO);
             mainListAdapter.notifyDataSetChanged();
             listHeaders.resetAllNotBold();
             listHeaders.textCountry.setTypeface(null, Typeface.BOLD_ITALIC);
@@ -180,32 +188,31 @@ public class MainActivity extends AppCompatActivity {
 
         listHeaders.textConfirmed.setOnClickListener(view -> {
             Log.v(TAG, "Sort by confirmed");
-            mainListAdapter.sort((breakdown, t1) -> t1.getTotalConfirmedCases() - breakdown.getTotalConfirmedCases());
+            mainListAdapter.sortByField(CountrySortFields.CONFIRMED);
             mainListAdapter.notifyDataSetChanged();
             listHeaders.resetAllNotBold();
             listHeaders.textConfirmed.setTypeface(null, Typeface.BOLD_ITALIC);
         });
 
         listHeaders.textDeaths.setOnClickListener(view -> {
-            mainListAdapter.sort((breakdown, t1) -> t1.getTotalDeaths() - breakdown.getTotalDeaths());
+            mainListAdapter.sortByField(CountrySortFields.DEATHS);
             mainListAdapter.notifyDataSetChanged();
             listHeaders.resetAllNotBold();
             listHeaders.textDeaths.setTypeface(null, Typeface.BOLD_ITALIC);
         });
 
         listHeaders.textRecovered.setOnClickListener(view -> {
-            mainListAdapter.sort((breakdown, t1) -> t1.getTotalRecoveredCases() - breakdown.getTotalRecoveredCases());
+            mainListAdapter.sortByField(CountrySortFields.RECOVERED);
             listHeaders.resetAllNotBold();
             mainListAdapter.notifyDataSetChanged();
             listHeaders.textRecovered.setTypeface(null, Typeface.BOLD_ITALIC);
         });
 
         listHeaders.textTodayNewCases.setOnClickListener(view -> {
-            mainListAdapter.sort((breakdown, t1) -> t1.getNewlyConfirmedCases() - breakdown.getNewlyConfirmedCases());
+            mainListAdapter.sortByField(CountrySortFields.NEW_CASES);
             listHeaders.resetAllNotBold();
             mainListAdapter.notifyDataSetChanged();
             listHeaders.textTodayNewCases.setTypeface(null, Typeface.BOLD_ITALIC);
-            listHeaders.textTodayNewCases.setClickable(true);
         });
     }
 
@@ -237,17 +244,12 @@ public class MainActivity extends AppCompatActivity {
             //this method will be running on UI thread
             mainListAdapter.clear();
             mainListAdapter.addAll(global.getStats().getBreakdowns());
-            initListSortedByCountry();
+            mainListAdapter.sortByCurrentField();
             mainListAdapter.notifyDataSetChanged();
             swipeLayout.setRefreshing(false);
         }
     }
 
-    private void initListSortedByCountry(){
-        mainListAdapter.sort((breakdown, t1) -> breakdown.getLocation().getIsoCode().compareTo(t1.getLocation().getIsoCode()));
-        listHeaders.resetAllNotBold();
-        listHeaders.textCountry.setTypeface(null, Typeface.BOLD_ITALIC);
-    }
 
     /**
      * isNetworkConnected
