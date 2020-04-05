@@ -2,6 +2,7 @@ package com.ospino.coronavirus.adapters;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.ospino.coronavirus.R;
 import com.ospino.coronavirus.activities.CountryDataActivity;
 import com.ospino.coronavirus.models.Breakdown;
+import com.ospino.coronavirus.models.Country;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,15 +24,24 @@ import androidx.annotation.NonNull;
 
 public class MainListAdapter extends ArrayAdapter<Breakdown> implements Filterable {
 
+    private final static String TAG = "MainListAdapter";
     private List<Breakdown> list;
     private List<Breakdown> filterList = null;
     private final Activity context;
+    private CountrySortFields currentSortField = CountrySortFields.COUNTRY_ISO;
 
     public MainListAdapter (Activity context, List<Breakdown> list) {
         super(context, R.layout.activity_main_list_view_item, list);
         this.context = context;
         this.list = list;
     }
+
+    public CountrySortFields getCurrentSortField() {return currentSortField;}
+
+    public void setCurrentSortField(CountrySortFields countrySortFields) { currentSortField = countrySortFields; }
+
+    public enum CountrySortFields {CONFIRMED, NEW_CASES, RECOVERED, DEATHS, COUNTRY_ISO}
+
 
     static class ViewHolder {
         protected TextView textViewConfirmed;
@@ -39,6 +50,33 @@ public class MainListAdapter extends ArrayAdapter<Breakdown> implements Filterab
         protected TextView textRecovered;
         protected TextView textDeaths;
         protected ImageView imageViewFlag;
+    }
+
+    public void sortByCurrentField() {
+        sortByField(currentSortField);
+    }
+
+    public void sortByField(CountrySortFields sortField) {
+        currentSortField = sortField; // Update the current sort field
+        switch (sortField) {
+            case COUNTRY_ISO:
+                sort((breakdown, t1) -> breakdown.getLocation().getIsoCode().compareTo(t1.getLocation().getIsoCode()));
+                break;
+            case CONFIRMED:
+                sort((breakdown, t1) -> t1.getTotalConfirmedCases() - breakdown.getTotalConfirmedCases());
+                break;
+            case NEW_CASES:
+                sort(((breakdown, t1) -> t1.getNewlyConfirmedCases() - breakdown.getNewlyConfirmedCases()));
+                break;
+            case DEATHS:
+                sort((breakdown, t1) -> t1.getTotalDeaths() - breakdown.getTotalDeaths());
+                break;
+            case RECOVERED:
+                sort((breakdown, t1) -> t1.getTotalRecoveredCases() - breakdown.getTotalRecoveredCases());
+                break;
+            default:
+                Log.v(TAG, "No Country field implemented");
+        }
     }
 
     @Override
