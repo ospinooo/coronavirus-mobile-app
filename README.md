@@ -8,6 +8,10 @@
 
 > Android app to be informed about the coronavirus statistics in the world and specific countries
 
+## Data
+
+Api used: [https://developer.smartable.ai/api-details#api=coronavirus&operation=news](https://developer.smartable.ai/api-details#api=coronavirus&operation=news)
+
 ## Screeshots
 
 |              Main list Screen              |                   Search                   |             Country statistics             |              World statistics              |
