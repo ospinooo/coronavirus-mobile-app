@@ -12,7 +12,7 @@
 
 Api used: [https://developer.smartable.ai/api-details#api=coronavirus&operation=news](https://developer.smartable.ai/api-details#api=coronavirus&operation=news)
 
-## Screeshots
+## Screenshots
 
 |              Main list Screen              |                   Search                   |             Country statistics             |              World statistics              |
 | :----------------------------------------: | :----------------------------------------: | :----------------------------------------: | :----------------------------------------: |
